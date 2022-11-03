@@ -13,10 +13,11 @@ class MQTTClientManager {
     myString = mBroker;
     print('Current Broker is  $myString');
   }
-  late dynamic client = MqttServerClient.withPort(
-      myString, 'mobile_client', 1883); //'broker.emqx.io'
 
   Future<int> connect() async {
+    late dynamic client = MqttServerClient.withPort(
+        myString, 'mobile_client', 1883); //'broker.emqx.io'
+
     client.logging(on: true);
     client.keepAlivePeriod = 60;
     client.onConnected = onConnected;
