@@ -4,8 +4,17 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 class MQTTClientManager {
-  MqttServerClient client =
-      MqttServerClient.withPort('broker.emqx.io', 'mobile_client', 1883);
+  final String mBroker;
+  static String myString = 'broker.emqx.io';
+
+  bool mqttConnected = false;
+
+  MQTTClientManager({required this.mBroker}) {
+    myString = mBroker;
+    print('Current Broker is  $myString');
+  }
+  late dynamic client = MqttServerClient.withPort(
+      myString, 'mobile_client', 1883); //'broker.emqx.io'
 
   Future<int> connect() async {
     client.logging(on: true);
@@ -32,20 +41,14 @@ class MQTTClientManager {
     return 0;
   }
 
-  void disconnect() {
-    client.disconnect();
-  }
-
-  void subscribe(String topic) {
-    client.subscribe(topic, MqttQos.atLeastOnce);
-  }
-
   void onConnected() {
     print('MQTTClient::Connected');
+    mqttConnected = true;
   }
 
   void onDisconnected() {
     print('MQTTClient::Disconnected');
+    mqttConnected = false;
   }
 
   void onSubscribed(String topic) {
@@ -54,6 +57,14 @@ class MQTTClientManager {
 
   void pong() {
     print('MQTTClient::Ping response received');
+  }
+
+  void disconnect() {
+    client.disconnect();
+  }
+
+  void subscribe(String topic) {
+    client.subscribe(topic, MqttQos.atLeastOnce);
   }
 
   void publishMessage(String topic, String message) {
