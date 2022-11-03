@@ -6,6 +6,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 class MQTTClientManager {
   final String mBroker;
   static String myString = 'broker.emqx.io';
+  late MqttServerClient client;
 
   bool mqttConnected = false;
 
@@ -15,7 +16,7 @@ class MQTTClientManager {
   }
 
   Future<int> connect() async {
-    late dynamic client = MqttServerClient.withPort(
+    client = MqttServerClient.withPort(
         myString, 'mobile_client', 1883); //'broker.emqx.io'
 
     client.logging(on: true);
@@ -71,7 +72,10 @@ class MQTTClientManager {
   void publishMessage(String topic, String message) {
     final builder = MqttClientPayloadBuilder();
     builder.addString(message);
-    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
+
+    if (mqttConnected) {
+      client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
+    }
   }
 
   Stream<List<MqttReceivedMessage<MqttMessage>>>? getMessagesStream() {

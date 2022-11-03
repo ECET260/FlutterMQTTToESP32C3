@@ -324,7 +324,7 @@ class _MyMQTTState extends State<MyMQTT> {
       //  print(buttonStatusMap);
       setState(() {
         newButtonStatus =
-            !buttonStatusMap['buttonStatus']; //active lo pushbutton
+            buttonStatusMap['buttonStatus']; //active lo pushbutton
       });
 
       print(newButtonStatus);
